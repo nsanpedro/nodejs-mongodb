@@ -2,7 +2,7 @@
 var express = require("express");
 var helmet = require("helmet");
 var bodyParser = require("body-parser");
-var mongoClient = require('mongodb').MongoClient;
+var MongoClient = require('mongodb').MongoClient;
 
 var app = express();
 

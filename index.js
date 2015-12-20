@@ -1,29 +1,37 @@
-//js de mongo+node - prueba
+//js mongo+node
+var express = require("express");
+var helmet = require("helmet");
+var bodyParser = require("body-parser");
+var mongoClient = require('mongodb').MongoClient;
 
-var MongoClient = require('mongodb').MongoClient;
+var app = express();
 
-var url = 'mongodb://localhost:27017/myproject';
+app.use(helmet());
+app.use(bodyParser.json());
 
-MongoClient.connect(url, function (err, db){
-	if (err) {
+var url = 'mongodb://localhost:27017/default';
+
+MongoClient.connect(url, function(err, db){
+
+	if(err){
+		console.error(err);
 		process.exit(1);
-	} else {
-		console.log("Connected correctly to server");
-
 	}
-	db.close();
-});
 
-// Insert de documentos
+	console.log("Connected correctly to mongoDB");
 
-var insertDocuments = function(db, callback){
-	var collection = db.collection('documents');
-
-	collection.insert([
-	{a : 1}, {a : 2}, {a : 3}], 
-	function(err, result) {
-			console.log("Inserted 3 documents into the document collection");
-			callback(result);
+	app.get("/addData", function(req, res){
+		var collection = db.collection('documents');
+		collection.insert([ {a : 1}, {a : 2}, {a : 3} ], function(err, result){
+			if(err){
+				res.json(err);
+			}
+			res.json(result);
 		});
-}
+	});
+
+	var server = app.listen(3000, function(err, inst){
+		console.log("Connected correctly to server");
+	});
+});
 
